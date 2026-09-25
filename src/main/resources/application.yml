@@ -18,3 +18,9 @@ spring:
     locations: classpath:db/migration
     # Se você quiser que o Flyway limpe o banco em ambiente de testes (cuidado em produção!)
     clean-disabled: true
+
+  spring-doc:
+    path-to-match:
+      - /api/**/v1/**
+    swagger-ui:
+      use-root-path: true
