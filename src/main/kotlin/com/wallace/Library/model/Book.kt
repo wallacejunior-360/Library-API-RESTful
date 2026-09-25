@@ -20,7 +20,7 @@ class Book (
     var author: String = "",
 
     @Column(name = "launch_date")
-    var launchDate: Date = Date(),
+    var launchDate: String = "",
 
     @Column(nullable = false)
     var price: Double = 0.0,

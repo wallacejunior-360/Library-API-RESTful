@@ -28,8 +28,8 @@ class BookService {
 
         val booksVO: List<BookVO> = DozerMapper.parseListObjects(books, BookVO::class.java)
 
-        for (bookVO in booksVO) {
-            val withSelfRel = linkTo(PersonController::class.java, bookVO)
+        for (bookVO: BookVO in booksVO) {
+            val withSelfRel = linkTo(BookController::class.java, bookVO)
                 .slash(bookVO.key).withSelfRel()
             bookVO.add(withSelfRel)
         }
