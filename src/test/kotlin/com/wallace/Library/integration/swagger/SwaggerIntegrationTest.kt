@@ -1,12 +1,11 @@
 package com.wallace.Library.integration.swagger
 
-import com.wallace.Library.integration.ConfigsTest
+import com.wallace.Library.integration.TestConfigs
 import com.wallace.Library.integration.testcontainers.AbstractIntegrationTest
 import io.restassured.RestAssured
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
-import kotlin.test.assertTrue
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class SwaggerIntegrationTest(): AbstractIntegrationTest() {
@@ -15,7 +14,7 @@ class SwaggerIntegrationTest(): AbstractIntegrationTest() {
 	fun shouldDisplaySwaggerUIPage() {
 		val content = RestAssured.given()
 			.basePath("/swagger-ui/index.html")
-			.port(ConfigsTest.SERVER_PORT)
+			.port(TestConfigs.SERVER_PORT)
 				.`when`()
 			.get()
 			.then()

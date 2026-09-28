@@ -1,4 +1,4 @@
-package com.wallace.Library.data.vo.v1
+package com.wallace.Library.integration.vo
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
@@ -11,11 +11,11 @@ import org.springframework.hateoas.RepresentationModel
 data class PersonVO (
     @Mapping("id")
     @field:JsonProperty("id")
-    var key: Long = 0,
+    var id: Long = 0,
     @JsonProperty("first_name")
     var firstName: String = "",
     @JsonProperty("last_name")
     var lastName: String = "",
     var address: String = "",
     var gender: String = ""
-) : RepresentationModel<PersonVO>()
+)
