@@ -10,7 +10,7 @@ import java.util.Date
 
 @Entity
 @Table(name = "books")
-class Book (
+data class Book (
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
