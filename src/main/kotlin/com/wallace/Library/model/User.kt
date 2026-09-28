@@ -1,0 +1,92 @@
+package com.wallace.Library.model
+
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.Table
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
+
+@Entity
+@Table(name = "users")
+class User : UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0
+
+    @Column(name = "user_name", unique = true)
+    var userName: String? = null
+
+    @Column(name = "full_name")
+    var fullName: String? = null
+
+    @Column(name = "password")
+    var password: String? = null
+
+    @Column(name = "account_non_expired")
+    var accountNonExpired: Boolean? = null
+
+    @Column(name = "account_non_locked")
+    var accountNonLocked: Boolean? = null
+
+    @Column(name = "enabled")
+    var enabled: Boolean? = null
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [(CascadeType.MERGE)])
+    @JoinTable(
+        name = "user_permission",
+        joinColumns = [JoinColumn(name = "id_user", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "id_permission", referencedColumnName = "id")]
+    )
+
+    var permissions: List<Permission>? = null
+
+    val role: List<String?>
+        get() {
+            val roles: MutableList<String?> = ArrayList()
+            for (permission in permissions!!) {
+                roles.add(permission.description)
+            }
+
+            return roles
+        }
+
+    @Column(name = "credentials_non_expired")
+    var credentialsNonExpired: Boolean? = null
+
+    override fun getAuthorities(): Collection<GrantedAuthority> {
+        return permissions!!
+    }
+
+    override fun getPassword(): String? {
+        return password!!
+    }
+
+    override fun getUsername(): String {
+        return userName!!
+    }
+
+    override fun isAccountNonExpired(): Boolean {
+        return accountNonExpired!!
+    }
+
+    override fun isAccountNonLocked(): Boolean {
+        return accountNonLocked!!
+    }
+
+    override fun isCredentialsNonExpired(): Boolean {
+        return credentialsNonExpired!!
+    }
+
+    override fun isEnabled(): Boolean {
+        return enabled!!
+    }
+}

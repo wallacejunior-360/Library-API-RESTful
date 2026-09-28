@@ -30,7 +30,7 @@
 		<java.version>25</java.version>
 		<kotlin.version>2.3.21</kotlin.version>
 		<dozer.version>7.0.0</dozer.version>
-
+		<java-jwt.version>4.6.1</java-jwt.version>
 	</properties>
 
 	<dependencies>
@@ -45,6 +45,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
+		</dependency>
+
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
 		<dependency>
@@ -119,12 +125,18 @@
 			<version>4.0.5</version>
 		</dependency>
 
+		<!-- Biblioteca JJWT para criar e validar tokens JWT -->
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>${java-jwt.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
 			<version>4.0.9</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>

@@ -1,6 +1,7 @@
 package com.wallace.Library.exceptions.handler
 
 import com.wallace.Library.exceptions.ExceptionResponse
+import com.wallace.Library.exceptions.InvalidJwtAuthenticationException
 import com.wallace.Library.exceptions.RequiredObjectIsNullException
 import com.wallace.Library.exceptions.ResourceNotFoundException
 import org.springframework.http.HttpStatus
@@ -52,5 +53,18 @@ class CustomizedResponseEntityExceptionHandler {
         )
 
         return ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(InvalidJwtAuthenticationException::class)
+    fun handlerInvalidJwtAuthenticationException(e: Exception, request: WebRequest):
+            ResponseEntity<ExceptionResponse>
+    {
+        val exceptionResponse = ExceptionResponse(
+            Date(),
+            e.message ?: "",
+            request.getDescription(false),
+        )
+
+        return ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.FORBIDDEN)
     }
 }
