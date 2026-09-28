@@ -1,4 +1,4 @@
-package com.wallace.Library.unittests.mapper.mocks
+package com.wallace.Library.unittests.mocks
 
 import com.wallace.Library.data.vo.v1.BookVO
 import com.wallace.Library.model.Book
