@@ -9,7 +9,7 @@ import jakarta.persistence.Table
 import org.springframework.security.core.GrantedAuthority
 
 @Entity
-@Table(name = "permissions")
+@Table(name = "permission")
 class Permission : GrantedAuthority {
 
     @Id

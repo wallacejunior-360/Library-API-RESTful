@@ -1,6 +1,12 @@
 cors:
   originPatterns: http://localhost:3000,http://localhost:8080,http://wallace.com.br
 
+security:
+  jwt:
+    token:
+      secret-key: 53cr37
+      expire-length: 3600000
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -13,7 +19,6 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: false
-
 
   flyway:
     # Ativa ou desativa o Flyway

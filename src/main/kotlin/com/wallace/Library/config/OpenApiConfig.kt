@@ -14,7 +14,7 @@ class OpenApiConfig {
         return OpenAPI()
             .info(
                 Info()
-                .title("Person API")
+                .title("Library API")
                     .version("1.0")
                     .description("Second API - RESTFul")
                     .license(

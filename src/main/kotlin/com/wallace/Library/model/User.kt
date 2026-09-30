@@ -23,70 +23,55 @@ class User : UserDetails {
     var id: Long = 0
 
     @Column(name = "user_name", unique = true)
-    var userName: String? = null
+    private var userName: String = ""
 
     @Column(name = "full_name")
-    var fullName: String? = null
+    var fullName: String = ""
 
     @Column(name = "password")
-    var password: String? = null
+    private var password: String = ""
 
     @Column(name = "account_non_expired")
-    var accountNonExpired: Boolean? = null
+    private var accountNonExpired: Boolean = true
 
     @Column(name = "account_non_locked")
-    var accountNonLocked: Boolean? = null
+    private var accountNonLocked: Boolean = true
+
+    @Column(name = "credentials_non_expired")
+    private var credentialsNonExpired: Boolean = true
 
     @Column(name = "enabled")
-    var enabled: Boolean? = null
+    private var enabled: Boolean = true
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = [(CascadeType.MERGE)])
+    // Inicializado como lista vazia para evitar NullPointerException
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.MERGE])
     @JoinTable(
         name = "user_permission",
         joinColumns = [JoinColumn(name = "id_user", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "id_permission", referencedColumnName = "id")]
     )
+    var permissions: List<Permission> = emptyList()
 
-    var permissions: List<Permission>? = null
+    // Sintaxe idiomática do Kotlin para mapear as permissões
+    val roles: List<String>
+        get() = permissions.map { it.description ?: "" }
 
-    val role: List<String?>
-        get() {
-            val roles: MutableList<String?> = ArrayList()
-            for (permission in permissions!!) {
-                roles.add(permission.description)
-            }
+    // 2. Implementação limpa dos métodos da interface usando overrides diretos nas funções
+    override fun getAuthorities(): Collection<GrantedAuthority> = permissions
 
-            return roles
-        }
+    override fun getUsername(): String = userName
 
-    @Column(name = "credentials_non_expired")
-    var credentialsNonExpired: Boolean? = null
+    override fun getPassword(): String = password
 
-    override fun getAuthorities(): Collection<GrantedAuthority> {
-        return permissions!!
-    }
+    override fun isAccountNonExpired(): Boolean = accountNonExpired
 
-    override fun getPassword(): String? {
-        return password!!
-    }
+    override fun isAccountNonLocked(): Boolean = accountNonLocked
 
-    override fun getUsername(): String {
-        return userName!!
-    }
+    override fun isCredentialsNonExpired(): Boolean = credentialsNonExpired
 
-    override fun isAccountNonExpired(): Boolean {
-        return accountNonExpired!!
-    }
+    override fun isEnabled(): Boolean = enabled
 
-    override fun isAccountNonLocked(): Boolean {
-        return accountNonLocked!!
-    }
-
-    override fun isCredentialsNonExpired(): Boolean {
-        return credentialsNonExpired!!
-    }
-
-    override fun isEnabled(): Boolean {
-        return enabled!!
-    }
+    // Setters customizados caso você precise alterar os campos internos de segurança
+    fun setUsername(username: String) { this.userName = username }
+    fun setPassword(password: String) { this.password = password }
 }
