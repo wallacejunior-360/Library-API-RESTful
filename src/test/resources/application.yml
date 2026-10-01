@@ -1,6 +1,9 @@
 cors:
   originPatterns: http://localhost:3000,http://localhost:8080,http://wallacejr.com.br
 
+file:
+  upload-dir: /home/varejo/Documentos/Estudo/testes
+
 server:
   port: 8888
 
@@ -20,6 +23,11 @@ spring:
       ddl-auto: none
     show-sql: false
 
+  servlet:
+    multipart:
+      enabled: true  # <--- Corrigido aqui (adicionado o 'd')
+      max-file-size: 10MB
+      max-request-size: 10MB
 
   flyway:
     # Ativa ou desativa o Flyway

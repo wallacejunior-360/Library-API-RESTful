@@ -283,4 +283,33 @@ class PersonControllerJsonTest : AbstractIntegrationTest() {
         personVO.gender = "Male"
         personVO.enabled = true
     }
+
+    @Test
+    @Order(7)
+    fun testHateos() {
+        val content = given()
+            .spec(specification)
+            .contentType(TestConfigs.CONTENT_TYPE_JSON)
+            .queryParams(
+                "page", 0,
+                "size", 12,
+                "direction", "asc"
+            )
+            .`when`()
+            .get()
+            .then()
+            .statusCode(200)
+            .extract()
+            .body()
+            .asString()
+
+        assertTrue(content.contains("""_links":{"self":{"href":"http://localhost:8888/api/person/v1/5"}}"""))
+        assertTrue(content.contains("""_links":{"self":{"href":"http://localhost:8888/api/person/v1/7"}}"""))
+        assertTrue(content.contains("""_links":{"self":{"href":"http://localhost:8888/api/person/v1/698"}}"""))
+
+        assertTrue(content.contains(""""first":{"href":"http://localhost:8888/api/person/v1?direction=asc&page=0&size=12&sort=firstName,asc"}"""))
+        assertTrue(content.contains(""""self":{"href":"http://localhost:8888/api/person/v1?direction=asc&page=0&size=12&sort=firstName,asc"}"""))
+        assertTrue(content.contains(""""next":{"href":"http://localhost:8888/api/person/v1?direction=asc&page=1&size=12&sort=firstName,asc"}"""))
+        assertTrue(content.contains(""""last":{"href":"http://localhost:8888/api/person/v1?direction=asc&page=83&size=12&sort=firstName,asc"}"""))
+    }
 }

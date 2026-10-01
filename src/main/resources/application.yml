@@ -1,6 +1,9 @@
 cors:
   originPatterns: http://localhost:3000,http://localhost:8080,http://wallace.com.br
 
+file:
+  upload-dir: /home/varejo/Documentos/Estudo/testes
+
 security:
   jwt:
     token:
@@ -19,6 +22,13 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: false
+
+  servlet:
+    multipart:
+      enabled: true  # <--- Corrigido aqui (adicionado o 'd')
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 
   flyway:
     # Ativa ou desativa o Flyway
