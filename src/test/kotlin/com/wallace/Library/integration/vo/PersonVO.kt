@@ -18,5 +18,6 @@ data class PersonVO (
     @JsonProperty("last_name")
     var lastName: String = "",
     var address: String = "",
-    var gender: String = ""
+    var gender: String = "",
+    var enabled: Boolean = true
 )

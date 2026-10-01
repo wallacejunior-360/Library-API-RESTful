@@ -8,6 +8,7 @@ import com.wallace.Library.integration.testcontainers.AbstractIntegrationTest
 import com.wallace.Library.integration.vo.AccountCredentialsVO
 import com.wallace.Library.integration.vo.PersonVO
 import com.wallace.Library.integration.vo.TokenVO
+import com.wallace.Library.integration.vo.wrappers.WrapperPersonVO
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.builder.RequestSpecBuilder
@@ -115,10 +116,49 @@ class PersonControllerJsonTest : AbstractIntegrationTest() {
         assertEquals("testado", createdPerson.lastName)
         assertEquals("teststreet", createdPerson.address)
         assertEquals("Male", createdPerson.gender)
+        assertEquals(true, createdPerson.enabled)
     }
 
     @Test
     @Order(2)
+    fun testFindAll() {
+        val createdPerson = given()
+            .spec(specification)
+            .contentType(TestConfigs.CONTENT_TYPE_JSON)
+            .queryParams(
+                "page", 3,
+                "size", 12,
+                "direction", "asc"
+            )
+            .`when`()
+            .get()
+            .then()
+            .statusCode(200)
+            .extract()
+            .body()
+            .`as`(WrapperPersonVO::class.java)
+
+        val people = createdPerson.embedded!!.persons
+
+        val item1 = people?.get(0)
+
+        assertNotNull(item1!!.id)
+
+        assertNotNull(item1.firstName)
+        assertNotNull(item1.lastName)
+        assertNotNull(item1.gender)
+        assertNotNull(item1.address)
+
+        assertEquals("Alla", item1.firstName)
+        assertEquals("Astall", item1.lastName)
+        assertEquals("72525 Emmet Alley", item1.address)
+        assertEquals("Female", item1.gender)
+        assertEquals(false, item1.enabled)
+
+    }
+
+    @Test
+    @Order(3)
     fun testUpdatePerson() {
         personVO.firstName = "Testinho"
 
@@ -150,10 +190,11 @@ class PersonControllerJsonTest : AbstractIntegrationTest() {
         assertEquals("testado", createdPerson.lastName)
         assertEquals("teststreet", createdPerson.address)
         assertEquals("Male", createdPerson.gender)
+        assertEquals(true, createdPerson.enabled)
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     fun testFindById() {
         val createdPerson = given()
             .spec(specification)
@@ -183,10 +224,45 @@ class PersonControllerJsonTest : AbstractIntegrationTest() {
         assertEquals("testado", createdPerson.lastName)
         assertEquals("teststreet", createdPerson.address)
         assertEquals("Male", createdPerson.gender)
+        assertEquals(true, createdPerson.enabled)
     }
 
     @Test
-    @Order(4)
+    @Order(5)
+    fun testDisablePersonById() {
+        val createdPerson = given()
+            .spec(specification)
+            .contentType(TestConfigs.CONTENT_TYPE_JSON)
+            .pathParam("id", personVO.id)
+            .`when`()
+            .patch("{id}")
+            .then()
+            .statusCode(200)
+            .extract()
+            .body()
+            .`as`(PersonVO::class.java)
+
+        //val createdPerson = objectMapper.readValue(content, PersonVO::class.java)
+
+        personVO = createdPerson
+
+        assertNotNull(createdPerson.id)
+
+        assertNotNull(createdPerson.firstName)
+        assertNotNull(createdPerson.lastName)
+        assertNotNull(createdPerson.gender)
+        assertNotNull(createdPerson.address)
+
+        assertEquals(personVO.id, createdPerson.id)
+        assertEquals("Testinho", createdPerson.firstName)
+        assertEquals("testado", createdPerson.lastName)
+        assertEquals("teststreet", createdPerson.address)
+        assertEquals("Male", createdPerson.gender)
+        assertEquals(false, createdPerson.enabled)
+    }
+
+    @Test
+    @Order(6)
     fun testDelete() {
         given()
             .spec(specification)
@@ -205,5 +281,6 @@ class PersonControllerJsonTest : AbstractIntegrationTest() {
         personVO.lastName = "testado"
         personVO.address = "teststreet"
         personVO.gender = "Male"
+        personVO.enabled = true
     }
 }

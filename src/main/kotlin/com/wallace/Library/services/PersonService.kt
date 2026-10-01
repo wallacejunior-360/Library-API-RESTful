@@ -8,8 +8,14 @@ import com.wallace.Library.mapper.DozerMapper
 import com.wallace.Library.model.Person
 import com.wallace.Library.repository.PersonRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedResourcesAssembler
+import org.springframework.hateoas.EntityModel
+import org.springframework.hateoas.PagedModel
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.logging.Logger
 
 @Service
@@ -18,26 +24,67 @@ class PersonService {
     @Autowired
     private lateinit var personRepository: PersonRepository
 
+    @Autowired
+    private lateinit var assembler: PagedResourcesAssembler<Person>
+
     private val logger = Logger.getLogger(PersonService::class.java.name)
 
-    fun findAll(): List<PersonVO> {
+    fun findAll(pageable: Pageable): PagedModel<EntityModel<PersonVO>> {
         logger.info("Trying to find all Persons")
 
-        val people =  personRepository.findAll()
+        // 1. Busca a página de entidades do repositório
+        val people = personRepository.findAll(pageable)
 
-        val peopleVO: List<PersonVO> = DozerMapper.parseListObjects(people, PersonVO::class.java)
+        // 2. Utiliza o assembler para converter a Page de Entidade diretamente para PagedModel<EntityModel<PersonVO>>
+        return assembler.toModel(people) { person ->
+            // Converte a entidade individual para VO
+            val vo = DozerMapper.parseObject(person, PersonVO::class.java)
 
-        for (personVO: PersonVO in peopleVO) {
-            val withSelfRel = linkTo(PersonController::class.java)
-                .slash(personVO.key).withSelfRel()
-            personVO.add(withSelfRel)
+            // Cria o EntityModel e adiciona o link HATEOAS individual
+            EntityModel.of(vo).apply {
+                add(linkTo(PersonController::class.java).slash(vo.key).withSelfRel())
+            }
         }
+    }
 
-        return peopleVO
+    fun findByName(firstName: String, pageable: Pageable): PagedModel<EntityModel<PersonVO>> {
+        logger.info("Trying to find all Persons")
+
+        // 1. Busca a página de entidades do repositório
+        val people = personRepository.findByName(firstName, pageable)
+
+        // 2. Utiliza o assembler para converter a Page de Entidade diretamente para PagedModel<EntityModel<PersonVO>>
+        return assembler.toModel(people) { person ->
+            // Converte a entidade individual para VO
+            val vo = DozerMapper.parseObject(person, PersonVO::class.java)
+
+            // Cria o EntityModel e adiciona o link HATEOAS individual
+            EntityModel.of(vo).apply {
+                add(linkTo(PersonController::class.java).slash(vo.key).withSelfRel())
+            }
+        }
     }
 
     fun findById(id: Long): PersonVO {
         logger.info("Trying to find Person with id: $id")
+
+        var person = personRepository
+            .findById(id)
+            .orElseThrow { ResourceNotFoundException("Person with id: $id not found") }
+
+        val personVO: PersonVO =  DozerMapper.parseObject(person, PersonVO::class.java)
+        val withSelfRel = linkTo(PersonController::class.java)
+            .slash(personVO.key).withSelfRel()
+        personVO.add(withSelfRel)
+
+        return personVO
+    }
+
+    @Transactional
+    fun disablePerson(id: Long): PersonVO {
+        logger.info("Disabling one Person with id: $id")
+
+        personRepository.disablePerson(id)
 
         var person = personRepository
             .findById(id)
