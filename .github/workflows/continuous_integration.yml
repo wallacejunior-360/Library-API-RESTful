@@ -23,21 +23,23 @@ jobs:
       uses: actions/setup-java@v6
       with:
         java-version: '25'
-        distribution: 'temurin'     
+        distribution: 'temurin'
         cache: 'maven' 
     
-    - name: Build Application Jar  
-      working-directory: ./Library-API-RESTful
-      run: mvn clean package -B       
+    - name: Build Application Jar
+      # CORRIGIDO: working-directory removido para rodar na raiz do projeto
+      env:
+        MAVEN_OPTS: "-Xmx1024m -XX:MaxMetaspaceSize=512m" # Ajuda o Testcontainers liberando RAM
+      run: mvn clean package -B
 
     - name: Docker Compose build
+      # CORRIGIDO: working-directory removido
       run: docker compose build
 
     - name: Push to Docker Hub Container registry
       run:  |
-        # Garanta que o nome 'wallace/rest-library-api' é exatamente o mesmo definido no seu docker-compose.yml
         docker tag wallace/rest-library-api ${{ secrets.DOCKER_USERNAME }}/rest-library-api:${{ github.run_id }} 
-        docker tag wallace/rest-library-api ${{ secrets.DOCKER_USERNAME }}/rest-library-api:latest # ADICIONADO: Criando a tag latest localmente
+        docker tag wallace/rest-library-api ${{ secrets.DOCKER_USERNAME }}/rest-library-api:latest
 
         docker push ${{ secrets.DOCKER_USERNAME }}/rest-library-api:${{ github.run_id }} 
         docker push ${{ secrets.DOCKER_USERNAME }}/rest-library-api:latest
