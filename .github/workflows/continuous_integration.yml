@@ -26,12 +26,10 @@ jobs:
         distribution: 'temurin'     # CORRIGIDO: 'adopt' mudou para 'temurin'
         cache: 'maven' 
     
-    - name: Build Application Jar
-      working-directory: ./Library-API-RESTful    
+    - name: Build Application Jar  
       run: mvn clean package        # CORRIGIDO: 'clear' alterado para 'clean'
 
     - name: Docker Compose build
-      working-directory: ./Library-API-RESTful    
       run: docker compose build
 
     - name: Push to Docker Hub Container registry
