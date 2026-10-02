@@ -23,11 +23,12 @@ jobs:
       uses: actions/setup-java@v6
       with:
         java-version: '25'
-        distribution: 'temurin'     # CORRIGIDO: 'adopt' mudou para 'temurin'
+        distribution: 'temurin'     
         cache: 'maven' 
     
     - name: Build Application Jar  
-      run: mvn clean package        # CORRIGIDO: 'clear' alterado para 'clean'
+      working-directory: ./Library-API-RESTful
+      run: mvn clean package -B       
 
     - name: Docker Compose build
       run: docker compose build
