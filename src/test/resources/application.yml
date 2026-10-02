@@ -1,9 +1,6 @@
 cors:
   originPatterns: http://localhost:3000,http://localhost:8080,http://wallacejr.com.br
 
-file:
-  upload-dir: /home/varejo/Documentos/Estudo/testes
-
 server:
   port: 8888
 
