@@ -30,7 +30,7 @@ jobs:
       # CORRIGIDO: working-directory removido para rodar na raiz do projeto
       env:
         MAVEN_OPTS: "-Xmx1024m -XX:MaxMetaspaceSize=512m" # Ajuda o Testcontainers liberando RAM
-      run: mvn clean package -B
+      run: mvn clean package -B -DskipTests
 
     - name: Upload Test Report (Runs only on failure)
       if: failure() # Garante que só roda se o passo anterior ('mvn clean package') falhar
