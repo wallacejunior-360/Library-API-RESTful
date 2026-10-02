@@ -32,6 +32,13 @@ jobs:
         MAVEN_OPTS: "-Xmx1024m -XX:MaxMetaspaceSize=512m" # Ajuda o Testcontainers liberando RAM
       run: mvn clean package -B
 
+    - name: Upload Test Report (Runs only on failure)
+      if: failure() # Garante que só roda se o passo anterior ('mvn clean package') falhar
+      uses: actions/upload-artifact@v4
+      with:
+        name: surefire-test-reports
+        path: '**/target/surefire-reports/*.txt'
+
     - name: Docker Compose build
       # CORRIGIDO: working-directory removido
       run: docker compose build
